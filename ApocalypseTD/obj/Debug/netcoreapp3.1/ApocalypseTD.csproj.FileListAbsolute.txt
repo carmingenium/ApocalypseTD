@@ -1,0 +1,17 @@
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\ApocalypseTD.exe
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\ApocalypseTD.deps.json
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\ApocalypseTD.runtimeconfig.json
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\ApocalypseTD.runtimeconfig.dev.json
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\ApocalypseTD.dll
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\ApocalypseTD.pdb
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.csproj.AssemblyReference.cache
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.Form1.resources
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.csproj.GenerateResource.cache
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.AssemblyInfoInputs.cache
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.AssemblyInfo.cs
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.csproj.CoreCompileInputs.cache
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.dll
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.pdb
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.genruntimeconfig.cache
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.PlayScene.resources
