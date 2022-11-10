@@ -37,6 +37,9 @@ namespace ApocalypseTD
             //e.Graphics.FillRectangle(myBrush, map);
         }
         private void fillGrid(Graphics g, Pen p) // 20*20, 20pixel rectangle grid.
+            // creating and painting objects at the same function
+            // Paint event keeps triggering, creating these objects seems to be reason.
+            // Important bug, needs to be fixed next time.
         {
             int bot = map.Bottom - map.Top;
             int right = map.Right - map.Left;
