@@ -50,6 +50,7 @@ namespace ApocalypseTD
             this.Controls.Add(this.button1);
             this.Name = "PlayScene";
             this.Text = "PlayScene";
+            this.Load += new System.EventHandler(this.PlayScene_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PlayScene_Paint);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PlayScene_MouseClick);
             this.ResumeLayout(false);
