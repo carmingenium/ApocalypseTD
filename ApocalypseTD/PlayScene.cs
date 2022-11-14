@@ -27,7 +27,7 @@ namespace ApocalypseTD
         private void PlayScene_Load(object sender, EventArgs e)
         {
             grid = new Rectangle[20, 20];
-            map = new Rectangle(200, 50, 400, 400);
+            map = new Rectangle(0, 0, 1920, 1080);
             createGrid();
 
             //g = this.CreateGraphics();
@@ -69,9 +69,11 @@ namespace ApocalypseTD
             }
         }
         private void createGrid()
-        {
-            int bot = map.Bottom - map.Top;
-            int right = map.Right - map.Left;
+        { // 200 50 400, 400
+            //int bot = map.Bottom - map.Top;
+            //int right = map.Right - map.Left;
+            int bot = 400;
+            int right = 400;
             for (int y = 0; y < bot; y += 20)
             {
                 for (int x = 0; x < right; x += 20)
@@ -136,14 +138,23 @@ namespace ApocalypseTD
             }
         }
         private void emptyTileClick(object sender, EventArgs e)
-            // on every click, form repaints itself.
-            // the picturebox gets removed because of this issue.
+        { // need to find a way to reshape large images.
+            PictureBox pb1 = new PictureBox();
+            pb1.ImageLocation = "images\\platform_test.png";
+            pb1.Size = new Size(1000, 1000);        // 100 100 and
+            pb1.Location = new Point(5, 5);     // 5, 5 shows image!
+            this.Controls.Add(pb1);
+            this.Text = "testremove";
+        }
+
+        private void button2_Click(object sender, EventArgs e)
         {
             PictureBox pb1 = new PictureBox();
-            pb1.ImageLocation = "images\\platform.png";
-            pb1.Left = 0;
-            pb1.Top = 0;
+            pb1.ImageLocation = "images\\platform_test.png";
+            pb1.Size = new Size(10, 10);        // 100 100 and
+            pb1.Location = new Point(500, 500);     // 5, 5 shows image!
             this.Controls.Add(pb1);
+            pb1.BringToFront();
             this.Text = "testremove";
         }
     }
