@@ -14,6 +14,7 @@ namespace ApocalypseTD
         Rectangle[,] grid;
         Rectangle map;
         // Graphics
+        Graphics g;
         Pen myPen = new Pen(Color.Black);           //Draws the borders around the shape
         Brush myBrush = new SolidBrush(Color.Blue); //Draws the interior of the shape
         // Unit state
@@ -28,6 +29,14 @@ namespace ApocalypseTD
             grid = new Rectangle[20, 20];
             map = new Rectangle(200, 50, 400, 400);
             createGrid();
+
+            //g = this.CreateGraphics();
+            //using (g)
+            //{
+            //    fillGrid(g, myPen);
+            //}
+            
+
             Mstate = false;
         }
 
@@ -39,7 +48,11 @@ namespace ApocalypseTD
             this.Close();
         }
 
-        private void PlayScene_Paint(object sender, PaintEventArgs e) // infinitely called rn.
+        private void PlayScene_Paint(object sender, PaintEventArgs e) 
+            // Right now, every mouseclick that is on a different surface repaints the whole form.
+            // changing container maps surface to 1080 - 1920 could fix the issue.
+            // whether the draw function is on the paint event or in load / shown, repainting happens. If function is on load, it does not repaint itself and map gets removed.
+            // if function is on the paint event, it repaints itself and maintains itself. So function will stay on paint for now, but painting in load is commented and conserved.
         {
             Graphics g = e.Graphics;
             g.DrawRectangle(myPen, map);
@@ -106,8 +119,8 @@ namespace ApocalypseTD
                 this.Controls.Remove(activeMenu);
                 Mstate = false;
             }
-            else
-            {
+            else    // needs more control mechanisms
+            {       // action changes for the state of that tile = empty, platform, unit, resource, blockage etc.
                 Button u1 = new Button();
                 u1.Text = "test";
                 u1.Location = new Point(tp.X - 10, tp.Y-20);
@@ -119,7 +132,19 @@ namespace ApocalypseTD
                 this.Controls.Add(activeMenu);
                 activeMenu.Visible = true;
                 activeMenu.BringToFront();
+                activeMenu.Click += emptyTileClick; // set a function for button click.
             }
+        }
+        private void emptyTileClick(object sender, EventArgs e)
+            // on every click, form repaints itself.
+            // the picturebox gets removed because of this issue.
+        {
+            PictureBox pb1 = new PictureBox();
+            pb1.ImageLocation = "images\\platform.png";
+            pb1.Left = 0;
+            pb1.Top = 0;
+            this.Controls.Add(pb1);
+            this.Text = "testremove";
         }
     }
 }
