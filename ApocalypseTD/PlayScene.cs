@@ -16,9 +16,19 @@ namespace ApocalypseTD
         // Graphics
         Pen myPen = new Pen(Color.Black);           //Draws the borders around the shape
         Brush myBrush = new SolidBrush(Color.Blue); //Draws the interior of the shape
+        // Unit state
+        bool Mstate;
+        Button activeMenu;
         public PlayScene()
         {
             InitializeComponent();
+        }
+        private void PlayScene_Load(object sender, EventArgs e)
+        {
+            grid = new Rectangle[20, 20];
+            map = new Rectangle(200, 50, 400, 400);
+            createGrid();
+            Mstate = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -65,34 +75,51 @@ namespace ApocalypseTD
             if (map.Contains(mousePt))
             {
                 this.Text = "You clicked on the map!";
-                for (int x = 0; x < 20; x += 1)
-                {
-                    if (mousePt.X < (grid[x, 0].X + 20))
-                    {
-                        for (int y = 0; y < 20; y += 1)
-                        {
-                            if(mousePt.Y < (grid[x, y].Y + 20))
-                            {
-                                this.Text = "You clicked on rectangle" + x +"x and " + y + "y";
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-            else if (true) // after grid is done, this if will be used to determine which rectangle has been clicked.
-            {
-                this.Text = "";
+                clickReg(mousePt);
             }
             else this.Text = "";
         }
-
-        private void PlayScene_Load(object sender, EventArgs e)
+        private void clickReg(Point mousePt)
         {
-            grid = new Rectangle[20, 20];
-            map = new Rectangle(200, 50, 400, 400);
-            createGrid();
+            for (int x = 0; x < 20; x += 1)
+            {
+                if (mousePt.X < (grid[x, 0].X + 20))
+                {
+                    for (int y = 0; y < 20; y += 1)
+                    {
+                        if (mousePt.Y < (grid[x, y].Y + 20))
+                        {
+                            this.Text = "You clicked on rectangle" + x + "x and " + y + "y";
+                            Point tilePoint = new Point(grid[x, y].X, grid[x, y].Y);
+                            addUnit(tilePoint);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        private void addUnit(Point tp) // tp = tilepoint
+        {
+            if (Mstate)
+            {
+                this.Controls.Remove(activeMenu);
+                Mstate = false;
+            }
+            else
+            {
+                Button u1 = new Button();
+                u1.Text = "test";
+                u1.Location = new Point(tp.X - 10, tp.Y-20);
+                u1.Size = new Size(40, 20);
+                
+                Mstate = true;
+                activeMenu = u1;
+
+                this.Controls.Add(activeMenu);
+                activeMenu.Visible = true;
+                activeMenu.BringToFront();
+            }
         }
     }
 }
