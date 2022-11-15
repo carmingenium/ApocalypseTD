@@ -18,8 +18,9 @@ namespace ApocalypseTD
         Pen myPen = new Pen(Color.Black);           //Draws the borders around the shape
         Brush myBrush = new SolidBrush(Color.Blue); //Draws the interior of the shape
         // Unit state
-        bool Mstate;
+        //int tileState; // 0 empty, 1 platformed, 2 unit....
         Button activeMenu;
+        bool Mstate; // Menu State.
         public PlayScene()
         {
             InitializeComponent();
@@ -29,13 +30,6 @@ namespace ApocalypseTD
             grid = new Rectangle[20, 20];
             map = new Rectangle(0, 0, 1920, 1080);
             createGrid();
-
-            //g = this.CreateGraphics();
-            //using (g)
-            //{
-            //    fillGrid(g, myPen);
-            //}
-            
 
             Mstate = false;
         }
@@ -159,6 +153,10 @@ namespace ApocalypseTD
 
             this.Controls.Remove(activeMenu);
             Mstate = false;
+        }
+        private void platformTileClick(object sender, EventArgs e)
+        {
+
         }
     }
 }
