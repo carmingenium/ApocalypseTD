@@ -8,19 +8,24 @@ using System.Windows.Forms;
 
 namespace ApocalypseTD
 {
+    
     public partial class PlayScene : Form
     {
         // Map
+        Tile[,] tileMap;
         Rectangle[,] grid;
         Rectangle map;
         // Graphics
         Graphics g;
         Pen myPen = new Pen(Color.Black);           //Draws the borders around the shape
         Brush myBrush = new SolidBrush(Color.Blue); //Draws the interior of the shape
+
         // Unit state
+
         //int tileState; // 0 empty, 1 platformed, 2 unit....
         Button activeMenu;
         bool Mstate; // Menu State.
+
         public PlayScene()
         {
             InitializeComponent();
@@ -28,11 +33,29 @@ namespace ApocalypseTD
         private void PlayScene_Load(object sender, EventArgs e)
         {
             grid = new Rectangle[20, 20];
+            tileMap = new Tile[20, 20];
             map = new Rectangle(0, 0, 1920, 1080);
             createGrid();
 
             Mstate = false;
         }
+        private void createGrid()
+        { // 200 50 400, 400
+            //int bot = map.Bottom - map.Top;
+            //int right = map.Right - map.Left;
+            int bot = 400;
+            int right = 400;
+            for (int y = 0; y < bot; y += 20)
+            {
+                for (int x = 0; x < right; x += 20)
+                {
+                    Rectangle currentRect = new Rectangle(200 + x, 50 + y, 20, 20);
+                    Tile currentTile = new Tile(currentRect);
+                    grid[x / 20, y / 20] = currentRect;
+                    tileMap[x / 20, y / 20] = currentTile;
+                }
+            }
+        } // 20*20, 20pixel rectangle grid.
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -62,21 +85,7 @@ namespace ApocalypseTD
                 }
             }
         }
-        private void createGrid()
-        { // 200 50 400, 400
-            //int bot = map.Bottom - map.Top;
-            //int right = map.Right - map.Left;
-            int bot = 400;
-            int right = 400;
-            for (int y = 0; y < bot; y += 20)
-            {
-                for (int x = 0; x < right; x += 20)
-                {
-                    Rectangle currentRect = new Rectangle(200 + x, 50 + y, 20, 20);
-                    grid[x / 20, y / 20] = currentRect;
-                }
-            }
-        } // 20*20, 20pixel rectangle grid.
+
 
         private void PlayScene_MouseClick(object sender, MouseEventArgs e)
         {
@@ -99,8 +108,7 @@ namespace ApocalypseTD
                         if (mousePt.Y < (grid[x, y].Y + 20))
                         {
                             this.Text = "You clicked on rectangle" + x + "x and " + y + "y";
-                            Point tilePoint = new Point(grid[x, y].X, grid[x, y].Y);
-                            addUnit(tilePoint);
+                            addUnit(tileMap[x,y]);
                             break;
                         }
                     }
@@ -108,7 +116,7 @@ namespace ApocalypseTD
                 }
             }
         }
-        private void addUnit(Point tp) // tp = tilepoint
+        private void addUnit(Tile tile) // tp = tilepoint
         {
             if (Mstate)
             {
@@ -117,19 +125,41 @@ namespace ApocalypseTD
             }
             else    // needs more control mechanisms
             {       // action changes for the state of that tile = empty, platform, unit, resource, blockage etc.
-                Button u1 = new Button();
-                u1.Text = "test";
-                u1.Location = new Point(tp.X - 10, tp.Y-20);
-                u1.Size = new Size(40, 20);
-                u1.Name = "activeEmpty";
-                Mstate = true;
-                activeMenu = u1;
+                switch (tile.State)
+                {
+                    case 0:
+                        Button u1 = new Button();
+                        u1.Text = "Platform";
+                        u1.Location = new Point(tile.loc.X - 10, tile.loc.Y - 20);
+                        u1.Size = new Size(40, 20);
+                        u1.Name = "activeEmpty";
+                        Mstate = true;
+                        activeMenu = u1;
 
-                this.Controls.Add(activeMenu);
-                activeMenu.Visible = true;
-                activeMenu.BringToFront();
-                activeMenu.Click += emptyTileClick; // set a function for button click.
+                        this.Controls.Add(activeMenu);
+                        activeMenu.Visible = true;
+                        activeMenu.BringToFront();
+                        activeMenu.Click += emptyTileClick; // set a function for button click.
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                }
+                //Button u1 = new Button();
+                //u1.Text = "test";
+                //u1.Location = new Point(tp.X - 10, tp.Y-20);
+                //u1.Size = new Size(40, 20);
+                //u1.Name = "activeEmpty";
+                //Mstate = true;
+                //activeMenu = u1;
+
+                //this.Controls.Add(activeMenu);
+                //activeMenu.Visible = true;
+                //activeMenu.BringToFront();
+                //activeMenu.Click += emptyTileClick; // set a function for button click.
             }
+
         }
         private void emptyTileClick(object sender, EventArgs e)
         {
@@ -157,6 +187,19 @@ namespace ApocalypseTD
         private void platformTileClick(object sender, EventArgs e)
         {
 
+        }
+    }
+    public class Tile
+    {
+        public Rectangle tileRect; //Drawn Rectangle of Tile
+        public Point loc; // Location of tile
+        public int State; // state of tile = empty, platformed, unit, resources etc...
+        public int[,] id;
+        public Tile(Rectangle rect)
+        {
+            tileRect = rect;
+            loc = rect.Location;
+            State = 0; // empty
         }
     }
 }
