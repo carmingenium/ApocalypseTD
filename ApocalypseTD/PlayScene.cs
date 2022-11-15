@@ -127,7 +127,7 @@ namespace ApocalypseTD
                 u1.Text = "test";
                 u1.Location = new Point(tp.X - 10, tp.Y-20);
                 u1.Size = new Size(40, 20);
-                
+                u1.Name = "activeEmpty";
                 Mstate = true;
                 activeMenu = u1;
 
@@ -138,24 +138,27 @@ namespace ApocalypseTD
             }
         }
         private void emptyTileClick(object sender, EventArgs e)
-        { // need to find a way to reshape large images.
-            PictureBox pb1 = new PictureBox();
-            pb1.ImageLocation = "images\\platform_test.png";
-            pb1.Size = new Size(1000, 1000);        // 100 100 and
-            pb1.Location = new Point(5, 5);     // 5, 5 shows image!
-            this.Controls.Add(pb1);
-            this.Text = "testremove";
-        }
-
-        private void button2_Click(object sender, EventArgs e)
         {
+            Point bLoc = new Point();
+            try
+            {
+                Control[] x = this.Controls.Find("activeEmpty", true);
+                bLoc = x[0].Location;
+            }
+            catch (Exception)
+            {
+
+            }
             PictureBox pb1 = new PictureBox();
-            pb1.ImageLocation = "images\\platform_test.png";
-            pb1.Size = new Size(10, 10);        // 100 100 and
-            pb1.Location = new Point(500, 500);     // 5, 5 shows image!
+            pb1.ImageLocation = "images\\platform_20.png";
+            pb1.Size = new Size(20, 20);        // 100 100 and
+            pb1.Location = new Point(bLoc.X+10, bLoc.Y + 20);
             this.Controls.Add(pb1);
             pb1.BringToFront();
             this.Text = "testremove";
+
+            this.Controls.Remove(activeMenu);
+            Mstate = false;
         }
     }
 }
