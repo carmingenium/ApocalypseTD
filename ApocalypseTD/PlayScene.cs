@@ -166,6 +166,7 @@ namespace ApocalypseTD
             Point bLoc = new Point();
             try
             {
+                // need to reach tile or rectangle here. 
                 Control[] x = this.Controls.Find("activeEmpty", true);
                 bLoc = x[0].Location;
             }
