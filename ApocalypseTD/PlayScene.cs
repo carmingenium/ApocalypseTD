@@ -97,8 +97,8 @@ namespace ApocalypseTD
             }
             else this.Text = "";
         }
-        private void clickReg(Point mousePt) // clickreg doesnt work after a platform has been put down.
-        {
+        private void clickReg(Point mousePt)    // clickreg doesnt work after a platform has been put down.
+        {                                       // need to change rectangles with pictureboxes.
             for (int x = 0; x < 20; x += 1)
             {
                 if (mousePt.X < (grid[x, 0].X + 20))
