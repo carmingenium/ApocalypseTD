@@ -50,7 +50,7 @@ namespace ApocalypseTD
                 for (int x = 0; x < right; x += 20)
                 {
                     Rectangle currentRect = new Rectangle(200 + x, 50 + y, 20, 20);
-                    Tile currentTile = new Tile(currentRect);
+                    Tile currentTile = new Tile(currentRect, currentRect.Location);
                     grid[x / 20, y / 20] = currentRect;
                     tileMap[x / 20, y / 20] = currentTile;
                 }
@@ -90,14 +90,14 @@ namespace ApocalypseTD
         private void PlayScene_MouseClick(object sender, MouseEventArgs e)
         {
             Point mousePt = new Point(e.X, e.Y);
-            if (map.Contains(mousePt))
+            if (map.Contains(mousePt)) // map doesnt contain pictureboxes
             {
                 this.Text = "You clicked on the map!";
-                clickReg(mousePt);
+                clickReg(mousePt); 
             }
             else this.Text = "";
         }
-        private void clickReg(Point mousePt)
+        private void clickReg(Point mousePt) // clickreg doesnt work after a platform has been put down.
         {
             for (int x = 0; x < 20; x += 1)
             {
@@ -116,6 +116,16 @@ namespace ApocalypseTD
                 }
             }
         }
+        private Button activeButton(Tile tl)
+        {
+            Button u1 = new Button();
+            u1.Text = "Creation";
+            u1.Location = new Point(tl.loc.X - 10, tl.loc.Y - 20);
+            u1.Size = new Size(40, 20);
+            u1.Name = "active";
+            Mstate = true;
+            return u1;
+        }
         private void addUnit(Tile tile) // tp = tilepoint
         {
             if (Mstate)
@@ -128,20 +138,23 @@ namespace ApocalypseTD
                 switch (tile.State)
                 {
                     case 0:
-                        Button u1 = new Button();
-                        u1.Text = "Platform";
-                        u1.Location = new Point(tile.loc.X - 10, tile.loc.Y - 20);
-                        u1.Size = new Size(40, 20);
-                        u1.Name = "activeEmpty";
-                        Mstate = true;
-                        activeMenu = u1;
+                        activeMenu = activeButton(tile);
+                        activeMenu.Text = "Platform";
+                        activeMenu.Name = "activeEmpty";
 
                         this.Controls.Add(activeMenu);
                         activeMenu.Visible = true;
                         activeMenu.BringToFront();
-                        activeMenu.Click += emptyTileClick; // set a function for button click.
+                        
+                        activeMenu.Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tile); };
+                        //activeMenu.Click += emptyTileClick; // set a function for button click.
                         break;
                     case 1:
+                        activeMenu = activeButton(tile);
+
+
+
+                        activeMenu.Click += (sender, EventArgs) => { platformTileClick(sender, EventArgs, tile); };
                         break;
                     case 2:
                         break;
@@ -161,31 +174,22 @@ namespace ApocalypseTD
             }
 
         }
-        private void emptyTileClick(object sender, EventArgs e)
+        private void emptyTileClick(object sender, EventArgs e, Tile tl)
         {
-            Point bLoc = new Point();
-            try
-            {
-                // need to reach tile or rectangle here. 
-                Control[] x = this.Controls.Find("activeEmpty", true);
-                bLoc = x[0].Location;
-            }
-            catch (Exception)
-            {
-
-            }
             PictureBox pb1 = new PictureBox();
             pb1.ImageLocation = "images\\platform_20.png";
-            pb1.Size = new Size(20, 20);        // 100 100 and
-            pb1.Location = new Point(bLoc.X+10, bLoc.Y + 20);
+            pb1.Size = new Size(20, 20);
+            pb1.Location = tl.loc;
             this.Controls.Add(pb1);
             pb1.BringToFront();
-            this.Text = "testremove";
 
+            tl.State = 1; // platform
+            // tl.stateSprite = newsprite;
+            
             this.Controls.Remove(activeMenu);
             Mstate = false;
         }
-        private void platformTileClick(object sender, EventArgs e)
+        private void platformTileClick(object sender, EventArgs e, Tile tl)
         {
 
         }
@@ -193,14 +197,19 @@ namespace ApocalypseTD
     public class Tile
     {
         public Rectangle tileRect; //Drawn Rectangle of Tile
+        public PictureBox tileSprite; // rectangle should become a picturebox? some form to hold tile picture
         public Point loc; // Location of tile
         public int State; // state of tile = empty, platformed, unit, resources etc...
+        public PictureBox stateSprite; // Correct sprite according to the state of tile.
         public int[,] id;
-        public Tile(Rectangle rect)
+        public Tile(Rectangle rect, Point locat)
         {
             tileRect = rect;
-            loc = rect.Location;
-            State = 0; // empty
+            loc = locat;
+            State = 0; // empty,
+            tileSprite = null; // for now.
+            stateSprite = null; // empty.
+            // stateSprite.BringToFront(); doesnt work because null, leaving it here for a reminder for later. it will never work here, needs to be relocated.
         }
     }
 }
