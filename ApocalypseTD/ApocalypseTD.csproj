@@ -25,6 +25,12 @@
     <None Update="images\platform_testlowm.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="images\tile-empty.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="images\tile-platformed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="platform.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

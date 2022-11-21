@@ -46,13 +46,12 @@ namespace ApocalypseTD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1000, 500);
+            this.ClientSize = new System.Drawing.Size(1000, 800);
             this.Controls.Add(this.button1);
             this.Name = "PlayScene";
             this.Text = "PlayScene";
             this.Load += new System.EventHandler(this.PlayScene_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PlayScene_Paint);
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PlayScene_MouseClick);
             this.ResumeLayout(false);
 
         }
