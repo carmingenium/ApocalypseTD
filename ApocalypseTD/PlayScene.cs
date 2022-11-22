@@ -76,10 +76,11 @@ namespace ApocalypseTD
             // need to calculate location for amount of times. also add y levels for 3 times, 3 times.
             for (int x = 0; x < times; x++)
             {
-                int ybc = (times - times % 3) / 3;
-                int levelreset = (times/3)-(x/3); // if times > 3, set it to 3 until x > 3 for every 3 loop. 6 3 3 , 5 3 2, 4 3 1, 7 3 3 1, 8 3 3 2, 2 = 2
-                int xfix = (((times  - ((levelreset-1)*3) -1 ) * 16) - ( 32 * (x - ((x/3)*3)) ) );
+                int levelreset = (3 - times % 3) * ((x+3) / (((times+3)/3)*3)); // if times > 3, set it to 3 until x > 3 for every 3 loop. 6 3 3 , 5 3 2, 4 3 1, 7 3 3 1, 8 3 3 2, 2 = 2
+                int xfix = (((3  - (levelreset) -1 ) * 16) - ( 32 * (x - ((x/3)*3)) ) );
                 int yfix = ((x / 3) * 20);
+
+
                 Button u1 = new Button();
                 u1.Text = "Creation" + (x+1);
                 u1.Location = new Point(tl.location.X-xfix, (tl.location.Y-20)-yfix);
