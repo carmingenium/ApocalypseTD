@@ -13,13 +13,12 @@ namespace ApocalypseTD
     {
         // Map
         Tile[,] tileMap;
-        Rectangle map;
         // Graphics
         Graphics g;
         Pen myPen = new Pen(Color.Black);           //Draws the borders around the shape
         Brush myBrush = new SolidBrush(Color.Blue); //Draws the interior of the shape
         //int tileState; // 0 empty, 1 platformed, 2 unit....
-        Button activeMenu;
+        Button[] activeMenus;
         bool Mstate; // Menu State.
 
         public PlayScene()
@@ -28,8 +27,8 @@ namespace ApocalypseTD
         }
         private void PlayScene_Load(object sender, EventArgs e)
         {
+            activeMenus = new Button[10];
             tileMap = new Tile[20, 20];
-            map = new Rectangle(0, 0, 1920, 1080);
             createGrid();
 
             Mstate = false;
@@ -45,9 +44,9 @@ namespace ApocalypseTD
                 for (int x = 0; x < right; x += 32)
                 {
                     Tile currentTile = new Tile(new Point(200 + x, 50 + y));
-                    // currentTile.tileSprite.MouseClick += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, currentTile); };
                     currentTile.tileSprite.MouseClick += (sender, EventArgs) => { addUnit(currentTile); };
                     this.Controls.Add(currentTile.tileSprite);
+
                     tileMap[xt,yt] = currentTile;
                     xt += 1;
                 }
@@ -55,6 +54,15 @@ namespace ApocalypseTD
                 yt += 1;
             }
         } // 20*20, 20pixel rectangle grid.
+        private void PlayScene_Paint(object sender, PaintEventArgs e)
+        {
+            // Right now, every mouseclick that is on a different surface repaints the whole form.
+            // changing container maps surface to 1080 - 1920 could fix the issue.
+            // whether the draw function is on the paint event or in load / shown, repainting happens. If function is on load, it does not repaint itself and map gets removed.
+            // if function is on the paint event, it repaints itself and maintains itself. So function will stay on paint for now, but painting in load is commented and conserved.
+            // g.DrawRectangle(myPen, map);
+            //e.Graphics.FillRectangle(myBrush, map);
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -63,31 +71,37 @@ namespace ApocalypseTD
             this.Close();
         } // return menu button.
 
-        private void PlayScene_Paint(object sender, PaintEventArgs e) 
-            // Right now, every mouseclick that is on a different surface repaints the whole form.
-            // changing container maps surface to 1080 - 1920 could fix the issue.
-            // whether the draw function is on the paint event or in load / shown, repainting happens. If function is on load, it does not repaint itself and map gets removed.
-            // if function is on the paint event, it repaints itself and maintains itself. So function will stay on paint for now, but painting in load is commented and conserved.
+        private void activateButtons(Tile tl, int times)
         {
-            Graphics g = e.Graphics;
-            g.DrawRectangle(myPen, map);
-            //e.Graphics.FillRectangle(myBrush, map);
-        }
-        private Button activeButton(Tile tl)
-        {
-            Button u1 = new Button();
-            u1.Text = "Creation";
-            u1.Location = new Point(tl.location.X - 10, tl.location.Y - 20);
-            u1.Size = new Size(40, 20);
-            u1.Name = "active";
+            // need to calculate location for amount of times. also add y levels for 3 times, 3 times.
+            for (int x = 0; x < times; x++)
+            {
+                int ybc = (times - times % 3) / 3;
+                int levelreset = (times/3)-(x/3); // if times > 3, set it to 3 until x > 3 for every 3 loop. 6 3 3 , 5 3 2, 4 3 1, 7 3 3 1, 8 3 3 2, 2 = 2
+                int xfix = (((times  - ((levelreset-1)*3) -1 ) * 16) - ( 32 * (x - ((x/3)*3)) ) );
+                int yfix = ((x / 3) * 20);
+                Button u1 = new Button();
+                u1.Text = "Creation" + (x+1);
+                u1.Location = new Point(tl.location.X-xfix, (tl.location.Y-20)-yfix);
+                u1.Size = new Size(32, 20);
+                u1.Name = "active" + (x+1);
+                activeMenus[x] = u1;
+            }
             Mstate = true;
-            return u1;
+        }
+        private void deactivateButtons()
+        {
+            for (int ind = 0; activeMenus.Length>ind;ind++)
+            {
+                this.Controls.Remove(activeMenus[ind]);
+            }
+            activeMenus = new Button[10];
         }
         private void addUnit(Tile tile) // tp = tilepoint
         {
             if (Mstate)
             {
-                this.Controls.Remove(activeMenu);
+                deactivateButtons();
                 Mstate = false;
             }
             else    // needs more control mechanisms
@@ -95,39 +109,51 @@ namespace ApocalypseTD
                 switch (tile.State)
                 {
                     case 0:
-                        activeMenu = activeButton(tile);
-                        activeMenu.Text = "Platform";
-                        activeMenu.Name = "activeEmpty";
+                        activateButtons(tile, 4);
+                        activeMenus[0].Text = "Platform";
+                        activeMenus[0].Name = "activeEmpty";
 
-                        this.Controls.Add(activeMenu);
-                        activeMenu.Visible = true;
-                        activeMenu.BringToFront();
-                        
-                        activeMenu.Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tile); };
-                        //activeMenu.Click += emptyTileClick; // set a function for button click.
+                        this.Controls.Add(activeMenus[0]);
+                        activeMenus[0].Visible = true;
+                        activeMenus[0].BringToFront();
+                        // separator
+                        activeMenus[1].Text = "Platform";
+                        activeMenus[1].Name = "activeEmpty";
+
+                        this.Controls.Add(activeMenus[1]);
+                        activeMenus[1].Visible = true;
+                        activeMenus[1].BringToFront();
+
+                        activeMenus[1].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tile); };
+                        // separator
+                        activeMenus[2].Text = "Platform";
+                        activeMenus[2].Name = "activeEmpty";
+
+                        this.Controls.Add(activeMenus[2]);
+                        activeMenus[2].Visible = true;
+                        activeMenus[2].BringToFront();
+
+                        activeMenus[2].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tile); };
+                        // separator
+                        activeMenus[3].Text = "Platform";
+                        activeMenus[3].Name = "activeEmpty";
+
+                        this.Controls.Add(activeMenus[3]);
+                        activeMenus[3].Visible = true;
+                        activeMenus[3].BringToFront();
+
+                        activeMenus[3].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tile); };
                         break;
                     case 1:
-                        activeMenu = activeButton(tile);
+                        //activeMenu = activeButton(tile);
 
 
 
-                        activeMenu.Click += (sender, EventArgs) => { platformTileClick(sender, EventArgs, tile); };
+                        //activeMenu.Click += (sender, EventArgs) => { platformTileClick(sender, EventArgs, tile); };
                         break;
                     case 2:
                         break;
                 }
-                //Button u1 = new Button();
-                //u1.Text = "test";
-                //u1.Location = new Point(tp.X - 10, tp.Y-20);
-                //u1.Size = new Size(40, 20);
-                //u1.Name = "activeEmpty";
-                //Mstate = true;
-                //activeMenu = u1;
-
-                //this.Controls.Add(activeMenu);
-                //activeMenu.Visible = true;
-                //activeMenu.BringToFront();
-                //activeMenu.Click += emptyTileClick; // set a function for button click.
             }
 
         }
@@ -135,8 +161,8 @@ namespace ApocalypseTD
         {
             tl.State = 1;
             tl.SetSprite(tl.State);
-            
-            this.Controls.Remove(activeMenu);
+
+            deactivateButtons();
             Mstate = false;
         }
         private void platformTileClick(object sender, EventArgs e, Tile tl)
@@ -146,6 +172,7 @@ namespace ApocalypseTD
     }
     public class Tile
     {
+        // if tile state is above a certain point, should not check for add unit. unit states will fill states until that point.
         public PictureBox tileSprite; // rectangle should become a picturebox? some form to hold tile picture
         public Point location; // Location of tile
         public int State; // state of tile = empty, platformed, unit, resources etc...
@@ -172,10 +199,11 @@ namespace ApocalypseTD
                     tileSprite.ImageLocation = "images\\tile-empty.png";
                     break;
                 case 1:
-                    tileSprite.ImageLocation = "images\\tile-platformed.png";
+                    tileSprite.ImageLocation = "images\\tile-platform.png";
                     // platformed sprite
                     break;
                 case 2:
+                    tileSprite.ImageLocation = "images\\tile-u1.png";
                     // platform + unit sprite
                     break;
             }

@@ -20,4 +20,5 @@ C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\Ap
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\platform_20.png
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\platform_test20.png
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-empty.png
-C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-platformed.png
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-platform.png
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-u1.png
