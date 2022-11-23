@@ -110,40 +110,9 @@ namespace ApocalypseTD
                 switch (tile.State)
                 {
                     case 0:
-                        activateButtons(tile, 4);
-                        activeMenus[0].Text = "Platform";
-                        activeMenus[0].Name = "activeEmpty";
-
-                        this.Controls.Add(activeMenus[0]);
-                        activeMenus[0].Visible = true;
-                        activeMenus[0].BringToFront();
-                        // separator
-                        activeMenus[1].Text = "Platform";
-                        activeMenus[1].Name = "activeEmpty";
-
-                        this.Controls.Add(activeMenus[1]);
-                        activeMenus[1].Visible = true;
-                        activeMenus[1].BringToFront();
-
-                        activeMenus[1].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tile); };
-                        // separator
-                        activeMenus[2].Text = "Platform";
-                        activeMenus[2].Name = "activeEmpty";
-
-                        this.Controls.Add(activeMenus[2]);
-                        activeMenus[2].Visible = true;
-                        activeMenus[2].BringToFront();
-
-                        activeMenus[2].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tile); };
-                        // separator
-                        activeMenus[3].Text = "Platform";
-                        activeMenus[3].Name = "activeEmpty";
-
-                        this.Controls.Add(activeMenus[3]);
-                        activeMenus[3].Visible = true;
-                        activeMenus[3].BringToFront();
-
-                        activeMenus[3].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tile); };
+                        activateButtons(tile, 2);
+                        emptyButtonSetter(0, tile);
+                        emptyButtonSetter(1, tile);
                         break;
                     case 1:
                         //activeMenu = activeButton(tile);
@@ -157,6 +126,16 @@ namespace ApocalypseTD
                 }
             }
 
+        }
+        private void emptyButtonSetter(int index, Tile tl)
+        {
+            activeMenus[index].Text = "Platform";
+            activeMenus[index].Name = "activeEmpty";
+
+            this.Controls.Add(activeMenus[index]);
+            activeMenus[index].Visible = true;
+            activeMenus[index].BringToFront();
+            activeMenus[index].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tl); };
         }
         private void emptyTileClick(object sender, EventArgs e, Tile tl)
         {
