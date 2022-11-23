@@ -16,7 +16,7 @@ namespace ApocalypseTD
         //int tileState; // 0 empty, 1 platformed, 2 unit....
         Button[] activeMenus;
         bool Mstate; // Menu State.
-
+                                                                                            // MAP // 
         public PlayScene()
         {
             InitializeComponent();
@@ -49,7 +49,12 @@ namespace ApocalypseTD
                 xt = 0;
                 yt += 1;
             }
-        } // 20*20, 20pixel rectangle grid.
+        } // 20x20y, 32*32pixel rectangle grid.
+        private void mapGen()
+        {
+            // Create resources, target, natural events here.
+            // editing map just after createGrid().
+        }  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -57,7 +62,7 @@ namespace ApocalypseTD
             menu.ShowDialog();
             this.Close();
         } // return menu button.
-
+                                                                                            // UNITS // 
         private void activateButtons(Tile tl, int times)
         {
             // need to calculate location for amount of times. also add y levels for 3 times, 3 times.
@@ -136,6 +141,35 @@ namespace ApocalypseTD
         {
 
         }
+
+                                                                                            // ENEMIES //
+        private void enemySpawner()
+        {
+            Point topleft = tileMap[0, 0].location;
+            Point topright = tileMap[19, 0].location;
+            Point bottomleft = tileMap[0, 19].location;
+            Point bottomright = tileMap[19, 19].location;
+            // maybe create a circle (or a function that consists these 4 points and is a circle graph?)
+            // i like the circle function idea.
+            // circle should be a little bigger than actual map borders. (guessing 16 pixels for now.)
+        }
+        private void spawnerTick(object sender, EventArgs e, int wave)
+        {
+            // according to the wave, have a list of enemies to spawn.
+            // every tick, spawn an enemy, on a random location on the circle function.
+        }
+        private void WaveTick(object sender, EventArgs e, int wave)
+        {
+
+        }
+        private void basicMovement(object sender, EventArgs e, int speed)
+        {
+
+        }
+
+
+
+                                                                                            // TILE // 
     }
     public class Tile
     {
