@@ -13,10 +13,6 @@ namespace ApocalypseTD
     {
         // Map
         Tile[,] tileMap;
-        // Graphics
-        Graphics g;
-        Pen myPen = new Pen(Color.Black);           //Draws the borders around the shape
-        Brush myBrush = new SolidBrush(Color.Blue); //Draws the interior of the shape
         //int tileState; // 0 empty, 1 platformed, 2 unit....
         Button[] activeMenus;
         bool Mstate; // Menu State.
@@ -54,15 +50,6 @@ namespace ApocalypseTD
                 yt += 1;
             }
         } // 20*20, 20pixel rectangle grid.
-        private void PlayScene_Paint(object sender, PaintEventArgs e)
-        {
-            // Right now, every mouseclick that is on a different surface repaints the whole form.
-            // changing container maps surface to 1080 - 1920 could fix the issue.
-            // whether the draw function is on the paint event or in load / shown, repainting happens. If function is on load, it does not repaint itself and map gets removed.
-            // if function is on the paint event, it repaints itself and maintains itself. So function will stay on paint for now, but painting in load is commented and conserved.
-            // g.DrawRectangle(myPen, map);
-            //e.Graphics.FillRectangle(myBrush, map);
-        }
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();

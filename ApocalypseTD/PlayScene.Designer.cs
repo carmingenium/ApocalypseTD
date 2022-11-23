@@ -51,7 +51,6 @@ namespace ApocalypseTD
             this.Name = "PlayScene";
             this.Text = "PlayScene";
             this.Load += new System.EventHandler(this.PlayScene_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.PlayScene_Paint);
             this.ResumeLayout(false);
 
         }
