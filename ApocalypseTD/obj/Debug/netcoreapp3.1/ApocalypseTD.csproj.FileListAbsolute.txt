@@ -14,11 +14,8 @@ C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\Ap
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.pdb
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.genruntimeconfig.cache
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.PlayScene.resources
-C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\platform_testlow.png
-C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\platform_testlowm.png
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\obj\Debug\netcoreapp3.1\ApocalypseTD.csproj.AssemblyReference.cache
-C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\platform_20.png
-C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\platform_test20.png
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-empty.png
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-platform.png
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-u1.png
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\enemytest3.png

@@ -16,6 +16,16 @@ namespace ApocalypseTD
         //int tileState; // 0 empty, 1 platformed, 2 unit....
         Button[] activeMenus;
         bool Mstate; // Menu State.
+        // spawner
+        int offset;
+        Point topleft;
+        Point topright;
+        Point bottomleft;
+        Point bottomright;
+        Point center;
+        float radius;
+
+
                                                                                             // MAP // 
         public PlayScene()
         {
@@ -23,11 +33,25 @@ namespace ApocalypseTD
         }
         private void PlayScene_Load(object sender, EventArgs e)
         {
+            // initialization
+            // button container
             activeMenus = new Button[10];
+            // map
             tileMap = new Tile[20, 20];
             createGrid();
-
+            // menu state
             Mstate = false;
+
+            // spawn circle
+            offset = 16;
+            topleft = new Point(tileMap[0, 0].location.X - offset, tileMap[0, 0].location.Y - offset);
+            topright = new Point(tileMap[19, 0].location.X + 32 + offset, tileMap[19, 0].location.Y - offset);
+            bottomleft = new Point(tileMap[0, 19].location.X - offset, tileMap[0, 19].location.Y + 32 + offset);
+            bottomright = new Point(tileMap[19, 19].location.X + 32 + offset, tileMap[19, 19].location.Y + 32 + offset);
+
+            center = new Point((topleft.X + topright.X) / 2, (topright.Y + bottomright.Y) / 2);
+            double radiusEx = (Math.Pow((center.X - topleft.X), 2) + (Math.Pow((center.Y - topleft.Y), 2)));
+            radius = (float)Math.Sqrt((radiusEx));
         }
         private void createGrid()
         {
@@ -62,7 +86,7 @@ namespace ApocalypseTD
             menu.ShowDialog();
             this.Close();
         } // return menu button.
-                                                                                            // UNITS // 
+                                                                                             // UNITS // 
         private void activateButtons(Tile tl, int times)
         {
             // need to calculate location for amount of times. also add y levels for 3 times, 3 times.
@@ -143,12 +167,36 @@ namespace ApocalypseTD
         }
 
                                                                                             // ENEMIES //
-        private void enemySpawner()
+        private Point rectangleFunc(Point C, float rad)
         {
-            Point topleft = tileMap[0, 0].location;
-            Point topright = tileMap[19, 0].location;
-            Point bottomleft = tileMap[0, 19].location;
-            Point bottomright = tileMap[19, 19].location;
+            //(x – h)^2 + (y – k)^2 = r ^ 2, where(h, k) represents the coordinates of the center of the circle, and r represents the radius of the circle.
+            // create random angle val: between 0 and 360 [0,360)
+            // 
+            Random x = new Random();
+            int angle = (x.Next(0,360));
+
+            double ylen = rad * Math.Sin(angle);
+            double xlen = rad * Math.Cos(angle);
+
+            Point spawnPoint = new Point(C.X + (int)xlen, C.Y + (int)ylen);
+            return spawnPoint;
+        }
+        private void enemySpawner(string enemyType)
+        {
+            // might need an enemy class with multiple picture box objects to hide that pictureboxes are not pngs and have whitespace.
+            // and also for animations.
+
+            PictureBox enemy = new PictureBox();
+            enemy.Location = rectangleFunc(center, radius);     // spawn location
+            enemy.ImageLocation = "images\\enemytest3.png";     // imagelocation
+            this.Controls.Add(enemy);                           // controls.add
+            enemy.BringToFront();                               // bringtofront
+            enemy.Visible = true;
+
+            // visible (if needed)
+
+            // subscribe to AI event.
+
             // maybe create a circle (or a function that consists these 4 points and is a circle graph?)
             // i like the circle function idea.
             // circle should be a little bigger than actual map borders. (guessing 16 pixels for now.)
@@ -157,19 +205,25 @@ namespace ApocalypseTD
         {
             // according to the wave, have a list of enemies to spawn.
             // every tick, spawn an enemy, on a random location on the circle function.
+            // call enemyspawner in the amount of wave enemies times, with enemy input
         }
         private void WaveTick(object sender, EventArgs e, int wave)
         {
 
         }
-        private void basicMovement(object sender, EventArgs e, int speed)
+        private void basicEnemyMovement(object sender, EventArgs e, int speed)
         {
 
         }
 
+        private void spawnTestTimer_Tick(object sender, EventArgs e) // 100ms.
+        {
+            enemySpawner("Test");
+        }
 
 
-                                                                                            // TILE // 
+
+        // TILE // 
     }
     public class Tile
     {
