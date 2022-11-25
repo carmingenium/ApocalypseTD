@@ -37,7 +37,7 @@ namespace ApocalypseTD
             // button container
             activeMenus = new Button[10];
             // map
-            tileMap = new Tile[20, 20];
+            tileMap = new Tile[30, 30];
             createGrid();
             // menu state
             Mstate = false;
@@ -45,9 +45,9 @@ namespace ApocalypseTD
             // spawn circle
             offset = 16;
             topleft = new Point(tileMap[0, 0].location.X - offset, tileMap[0, 0].location.Y - offset);
-            topright = new Point(tileMap[19, 0].location.X + 32 + offset, tileMap[19, 0].location.Y - offset);
-            bottomleft = new Point(tileMap[0, 19].location.X - offset, tileMap[0, 19].location.Y + 32 + offset);
-            bottomright = new Point(tileMap[19, 19].location.X + 32 + offset, tileMap[19, 19].location.Y + 32 + offset);
+            topright = new Point(tileMap[29, 0].location.X + 32 + offset, tileMap[29, 0].location.Y - offset);
+            bottomleft = new Point(tileMap[0, 29].location.X - offset, tileMap[0, 29].location.Y + 32 + offset);
+            bottomright = new Point(tileMap[29, 29].location.X + 32 + offset, tileMap[29, 29].location.Y + 32 + offset);
 
             center = new Point((topleft.X + topright.X) / 2, (topright.Y + bottomright.Y) / 2);
             double radiusEx = (Math.Pow((center.X - topleft.X), 2) + (Math.Pow((center.Y - topleft.Y), 2)));
@@ -55,15 +55,17 @@ namespace ApocalypseTD
         }
         private void createGrid()
         {
-            int bot = 640;
-            int right = 640;
-            int yt = 0; // y times
-            int xt = 0; // x times
+            int bot = 32*30;    // size of tile * amount of tile
+            int right = 32*30;  // size of tile * amount of tile
+            // 32*30 = 960 which is also 1920 / 2, so it is perfect width for me, for now.
+            int yt = 0;         // y times
+            int xt = 0;         // x times
+            int yoffset = 40;
             for (int y = 0; y < bot; y += 32)
             {
                 for (int x = 0; x < right; x += 32)
                 {
-                    Tile currentTile = new Tile(new Point(200 + x, 50 + y));
+                    Tile currentTile = new Tile(new Point(0 + x, yoffset + y));
                     currentTile.tileSprite.MouseClick += (sender, EventArgs) => { addUnit(currentTile); };
                     this.Controls.Add(currentTile.tileSprite);
 
@@ -73,9 +75,27 @@ namespace ApocalypseTD
                 xt = 0;
                 yt += 1;
             }
-        } // 20x20y, 32*32pixel rectangle grid.
+        } // 30*30, 32*32pixel rectangle grid.
         private void mapGen()
         {
+            // all these locations should not collide. need a better way to handle this
+            Random roll = new Random();
+
+            int[] objective = new int[2];
+            objective[0] = roll.Next(12, 18);
+            objective[1] = roll.Next(12, 18);
+            int[,] resources = new int[2, 2];
+            resources[0, 0] = roll.Next(0, 30);
+            resources[0, 1] = roll.Next(0, 30);
+            resources[1, 0] = roll.Next(0, 30);
+            resources[1, 1] = roll.Next(0, 30);
+
+            int boulderAmount = roll.Next(0, 6);
+            int[,] boulders = new int[boulderAmount, 2];
+            //for(int index = 0; index < boulderAmount; index++)
+            //{
+            //    boulders
+            //}
             // Create resources, target, natural events here.
             // editing map just after createGrid().
         }  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -114,7 +134,7 @@ namespace ApocalypseTD
             }
             activeMenus = new Button[10];
         }
-        private void addUnit(Tile tile) // tp = tilepoint
+        private void addUnit(Tile tile)
         {
             if (Mstate)
             {
@@ -191,40 +211,37 @@ namespace ApocalypseTD
             enemy.ImageLocation = "images\\enemytest3.png";     // imagelocation
             this.Controls.Add(enemy);                           // controls.add
             enemy.BringToFront();                               // bringtofront
-            enemy.Visible = true;
 
             // visible (if needed)
-
+            //enemy.
             // subscribe to AI event.
 
             // maybe create a circle (or a function that consists these 4 points and is a circle graph?)
             // i like the circle function idea.
             // circle should be a little bigger than actual map borders. (guessing 16 pixels for now.)
         }
-        private void spawnerTick(object sender, EventArgs e, int wave)
-        {
-            // according to the wave, have a list of enemies to spawn.
-            // every tick, spawn an enemy, on a random location on the circle function.
-            // call enemyspawner in the amount of wave enemies times, with enemy input
-        }
-        private void WaveTick(object sender, EventArgs e, int wave)
-        {
-
-        }
         private void basicEnemyMovement(object sender, EventArgs e, int speed)
         {
 
         }
-
-        private void spawnTestTimer_Tick(object sender, EventArgs e) // 100ms.
+        private void spawnTestTimer_Tick(object sender, EventArgs e)    // 100ms.
         {
-            enemySpawner("Test");
+            // according to the wave, have a list of enemies to spawn.
+            // every tick, spawn an enemy, on a random location on the circle function.
+            // call enemyspawner in the amount of wave enemies times, with enemy input
+            //enemySpawner("Test");
+        }
+        private void skipWave(object sender, EventArgs e)               // button event.
+        {
+
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
 
-
-        // TILE // 
+        }
     }
+    // TILE // 
     public class Tile
     {
         // if tile state is above a certain point, should not check for add unit. unit states will fill states until that point.
