@@ -24,9 +24,9 @@ namespace ApocalypseTD
         Point bottomright;
         Point center;
         float radius;
-
-
-                                                                                            // MAP // 
+        // random
+        Random roll;
+        // MAP // 
         public PlayScene()
         {
             InitializeComponent();
@@ -34,6 +34,8 @@ namespace ApocalypseTD
         private void PlayScene_Load(object sender, EventArgs e)
         {
             // initialization
+            // random
+            roll = new Random();
             // button container
             activeMenus = new Button[10];
             // map
@@ -52,6 +54,7 @@ namespace ApocalypseTD
             center = new Point((topleft.X + topright.X) / 2, (topright.Y + bottomright.Y) / 2);
             double radiusEx = (Math.Pow((center.X - topleft.X), 2) + (Math.Pow((center.Y - topleft.Y), 2)));
             radius = (float)Math.Sqrt((radiusEx));
+
         }
         private void createGrid()
         {
@@ -76,29 +79,76 @@ namespace ApocalypseTD
                 yt += 1;
             }
         } // 30*30, 32*32pixel rectangle grid.
-        private void mapGen()
+        private void mapGen() // RIGHT NOW THE TILES ARE NOT APPLIED.
         {
-            // all these locations should not collide. need a better way to handle this
-            Random roll = new Random();
+            // gen location holder
+            // dont need categorization, just need the generated tiles.
 
-            int[] objective = new int[2];
-            objective[0] = roll.Next(12, 18);
-            objective[1] = roll.Next(12, 18);
-            int[,] resources = new int[2, 2];
-            resources[0, 0] = roll.Next(0, 30);
-            resources[0, 1] = roll.Next(0, 30);
-            resources[1, 0] = roll.Next(0, 30);
-            resources[1, 1] = roll.Next(0, 30);
+            Point[] genArray = new Point[50];
+            int last = 0;
 
+            // objective
+            Point obj = new Point(roll.Next(12,18), roll.Next(12, 18));
+            genArray[last++] = obj;  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! test
+            tileImplement(obj, state.Target); // set tile to Target
+
+            // corruption
+            genArray[last++] = new Point(obj.X, obj.Y + 1);     // midright
+            genArray[last++] = new Point(obj.X, obj.Y - 1);     // midleft
+            genArray[last++] = new Point(obj.X - 1, obj.Y);     // topmid
+            genArray[last++] = new Point(obj.X + 1, obj.Y);     // botmid
+
+            genArray[last++] = new Point(obj.X - 1, obj.Y - 1); // topleft 
+            genArray[last++] = new Point(obj.X - 1, obj.Y + 1); // topright     
+            genArray[last++] = new Point(obj.X + 1, obj.Y - 1); // botleft    
+            genArray[last++] = new Point(obj.X + 1, obj.Y + 1); // botright 
+
+            for (int rep = 0; rep < 8; rep++) // set all corrupted tiles.
+            {
+                tileImplement(genArray[rep+1], state.Corrupted);
+            }
+
+
+            // resources
+            for(int amount = 0; amount < 2; amount++)
+            {
+                Point resourcePoint;
+                do
+                {
+                    resourcePoint = new Point(roll.Next(0, 30), roll.Next(0, 30));
+                } while (tileGenerated(resourcePoint,genArray,last));
+                genArray[last++] = resourcePoint;
+                tileImplement(genArray[last - 1], state.Resource); // set tile state to resource.
+            }
+            
+            // boulders
             int boulderAmount = roll.Next(0, 6);
-            int[,] boulders = new int[boulderAmount, 2];
-            //for(int index = 0; index < boulderAmount; index++)
-            //{
-            //    boulders
-            //}
-            // Create resources, target, natural events here.
-            // editing map just after createGrid().
-        }  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            for (int amount = 0; amount < boulderAmount; amount++)
+            {
+                Point boulderPoint;
+                do
+                {
+                    boulderPoint = new Point(roll.Next(0, 30), roll.Next(0, 30));
+                } while (tileGenerated(boulderPoint, genArray, last));
+                genArray[last++] = boulderPoint;
+                tileImplement(genArray[last - 1], state.Boulder); // set tile state to boulder.
+            }
+        }
+        private bool tileGenerated(Point current, Point[] locArray, int last)
+        {
+            for (int len = 0; len < (last + 1); len++)
+            {
+                if (current == locArray[len])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void tileImplement(Point current, state state)
+        {
+            tileMap[current.X, current.Y].SetState(state);
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -145,20 +195,29 @@ namespace ApocalypseTD
             {       // action changes for the state of that tile = empty, platform, unit, resource, blockage etc.
                 switch (tile.State)
                 {
-                    case 0:
+                    case state.Empty:
                         activateButtons(tile, 2);
                         emptyButtonSetter(0, tile);
                         emptyButtonSetter(1, tile);
                         break;
-                    case 1:
+                    case state.Platformed:
                         //activeMenu = activeButton(tile);
 
 
 
                         //activeMenu.Click += (sender, EventArgs) => { platformTileClick(sender, EventArgs, tile); };
                         break;
-                    case 2:
+                    case state.t1:
                         break;
+                    case state.Target:
+                        break;
+                    case state.Corrupted:
+                        break;
+                    case state.Resource:
+                        break;
+                    case state.Boulder:
+                        break;
+
                 }
             }
 
@@ -175,8 +234,7 @@ namespace ApocalypseTD
         }
         private void emptyTileClick(object sender, EventArgs e, Tile tl)
         {
-            tl.State = 1;
-            tl.SetSprite(tl.State);
+            tl.SetState(state.Platformed);
 
             deactivateButtons();
             Mstate = false;
@@ -208,6 +266,7 @@ namespace ApocalypseTD
 
             PictureBox enemy = new PictureBox();
             enemy.Location = rectangleFunc(center, radius);     // spawn location
+            enemy.Size = new Size(32, 32);
             enemy.ImageLocation = "images\\enemytest3.png";     // imagelocation
             this.Controls.Add(enemy);                           // controls.add
             enemy.BringToFront();                               // bringtofront
@@ -229,7 +288,7 @@ namespace ApocalypseTD
             // according to the wave, have a list of enemies to spawn.
             // every tick, spawn an enemy, on a random location on the circle function.
             // call enemyspawner in the amount of wave enemies times, with enemy input
-            //enemySpawner("Test");
+            enemySpawner("Test");
         }
         private void skipWave(object sender, EventArgs e)               // button event.
         {
@@ -247,38 +306,61 @@ namespace ApocalypseTD
         // if tile state is above a certain point, should not check for add unit. unit states will fill states until that point.
         public PictureBox tileSprite; // rectangle should become a picturebox? some form to hold tile picture
         public Point location; // Location of tile
-        public int State; // state of tile = empty, platformed, unit, resources etc...
+        public state State; // TURN INTO ENUMERATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         public int[,] id;
         public Tile(Point locat)
         {
             location = locat;
-            State = 0; // empty
 
             tileSprite = new PictureBox();
             tileSprite.Size = new Size(32, 32);
             tileSprite.Location = location;
 
-            SetSprite(State);
+            SetState(State);
 
         }
 
-        public void SetSprite(int stateinf)
+        public void SetState(state stateinf)
         {
-
+            State = stateinf;
             switch (stateinf)
             {
-                case 0:// empty
+                case state.Target: 
                     tileSprite.ImageLocation = "images\\tile-empty.png";
                     break;
-                case 1:
+                case state.Corrupted:
+                    tileSprite.ImageLocation = "images\\tile-empty.png";
+                    break;
+                case state.Resource:
+                    tileSprite.ImageLocation = "images\\tile-empty.png";
+                    break;
+                case state.Boulder:
+                    tileSprite.ImageLocation = "images\\tile-empty.png";
+                    break;
+                case state.Empty:
+                    tileSprite.ImageLocation = "images\\tile-empty.png";
+                    break;
+                case state.Platformed:
                     tileSprite.ImageLocation = "images\\tile-platform.png";
                     // platformed sprite
                     break;
-                case 2:
+                case state.t1:
                     tileSprite.ImageLocation = "images\\tile-u1.png";
                     // platform + unit sprite
                     break;
             }
         }
+    }
+    // Tile ENUM //
+    public enum state
+    {
+        Target,             // 0
+        Corrupted,          // 1
+        Resource,           // 2
+        Boulder,            // 3
+        Empty,              // 4
+        Platformed,         // 5
+        t1,                 // 6
+        t2                  // 7
     }
 }
