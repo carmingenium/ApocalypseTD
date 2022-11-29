@@ -57,6 +57,13 @@ namespace ApocalypseTD
             radius = (float)Math.Sqrt((radiusEx));
 
         }
+        private void menuReturn(object sender, EventArgs e)
+        {
+            this.Hide();
+            Form1 menu = new Form1();
+            menu.ShowDialog();
+            this.Close();
+        }   // return menu button.
         private void createGrid()
         {
             int bot = 32*30;    // size of tile * amount of tile
@@ -70,7 +77,7 @@ namespace ApocalypseTD
                 for (int x = 0; x < right; x += 32)
                 {
                     Tile currentTile = new Tile(new Point(0 + x, yoffset + y));
-                    currentTile.tileSprite.MouseClick += (sender, EventArgs) => { addUnit(currentTile); };
+                    currentTile.tileSprite.MouseClick += (sender, EventArgs) => { changeState(currentTile); };
                     this.Controls.Add(currentTile.tileSprite);
 
                     tileMap[xt,yt] = currentTile;
@@ -111,7 +118,7 @@ namespace ApocalypseTD
 
 
             // resources
-            for(int amount = 0; amount < 2; amount++)
+            for(int amount = 0; amount < 3; amount++)
             {
                 Point resourcePoint;
                 do
@@ -123,7 +130,7 @@ namespace ApocalypseTD
             }
             
             // boulders
-            int boulderAmount = roll.Next(0, 6);
+            int boulderAmount = roll.Next(2, 8);
             for (int amount = 0; amount < boulderAmount; amount++)
             {
                 Point boulderPoint;
@@ -150,15 +157,9 @@ namespace ApocalypseTD
         {
             tileMap[current.X, current.Y].SetState(state);
         }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            Form1 menu = new Form1();
-            menu.ShowDialog();
-            this.Close();
-        } // return menu button.
+
                                                                                              // UNITS // 
-        private void activateButtons(Tile tl, int times)
+        private void createButtons(Tile tl, int times)
         {
             // need to calculate location for amount of times. also add y levels for 3 times, 3 times.
             for (int x = 0; x < times; x++)
@@ -177,6 +178,75 @@ namespace ApocalypseTD
             }
             Mstate = true;
         }
+        private void activateButtons(Tile tl, state stateinfo)
+        {
+            switch (stateinfo)
+            {
+                case state.Empty:
+
+                    createButtons(tl, 1);
+                    activeMenus[0].Text = "Platform";
+                    activeMenus[0].Name = "activeEmpty";
+
+                    this.Controls.Add(activeMenus[0]);
+                    activeMenus[0].Visible = true;
+                    activeMenus[0].BringToFront();
+                    activeMenus[0].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tl); };
+                    break;
+
+                case state.Platformed:
+                    createButtons(tl, 2);
+                    for(int unit = 0; 2>unit; unit++)
+                    {
+                        activeMenus[unit].Text = "Unit" + (unit + 1);
+                        activeMenus[unit].Name = "active";
+
+                        this.Controls.Add(activeMenus[unit]);
+                        activeMenus[unit].Visible = true;
+                        activeMenus[unit].BringToFront();
+
+
+                        state current = (state)(unit + 6);
+                        activeMenus[unit].Click += (sender, EventArgs) => { platformTileClick(sender, EventArgs, tl, current); };
+                    }
+                    break;
+                case state.Target:
+                    break;
+                case state.Corrupted:
+                    break;
+                case state.Resource:
+                    createButtons(tl, 1);
+                    activeMenus[0].Text = "Mine";
+                    activeMenus[0].Name = "active";
+
+                    this.Controls.Add(activeMenus[0]);
+                    activeMenus[0].Visible = true;
+                    activeMenus[0].BringToFront();
+                    activeMenus[0].Click += (sender, EventArgs) => { resourceTileClick(sender, EventArgs, tl); };
+                    break;
+                case state.Boulder:
+                    break;
+            }
+            if ((int)stateinfo >= 6) // if state is a unit.
+            {
+                //if (x == 0)
+                //{
+                //    activeMenus[x].Text = "Sell";
+                //    // need differenet click action
+                //}
+                //else
+                //{
+                //    activeMenus[x].Text = "Upgrade";
+                //    // need differenet click action
+                //}
+
+                //activeMenus[x].Name = "active";
+
+                //this.Controls.Add(activeMenus[x]);
+                //activeMenus[x].Visible = true;
+                //activeMenus[x].BringToFront();
+            }
+        }
         private void deactivateButtons()
         {
             for (int ind = 0; activeMenus.Length>ind;ind++)
@@ -185,7 +255,7 @@ namespace ApocalypseTD
             }
             activeMenus = new Button[10];
         }
-        private void addUnit(Tile tile)
+        private void changeState(Tile tile)
         {
             if (Mstate)
             {
@@ -194,44 +264,9 @@ namespace ApocalypseTD
             }
             else    // needs more control mechanisms
             {       // action changes for the state of that tile = empty, platform, unit, resource, blockage etc.
-                switch (tile.State)
-                {
-                    case state.Empty:
-                        activateButtons(tile, 2);
-                        emptyButtonSetter(0, tile);
-                        emptyButtonSetter(1, tile);
-                        break;
-                    case state.Platformed:
-                        //activeMenu = activeButton(tile);
-
-
-
-                        //activeMenu.Click += (sender, EventArgs) => { platformTileClick(sender, EventArgs, tile); };
-                        break;
-                    case state.t1:
-                        break;
-                    case state.Target:
-                        break;
-                    case state.Corrupted:
-                        break;
-                    case state.Resource:
-                        break;
-                    case state.Boulder:
-                        break;
-
-                }
+                activateButtons(tile, tile.State);
             }
 
-        }
-        private void emptyButtonSetter(int index, Tile tl)
-        {
-            activeMenus[index].Text = "Platform";
-            activeMenus[index].Name = "activeEmpty";
-
-            this.Controls.Add(activeMenus[index]);
-            activeMenus[index].Visible = true;
-            activeMenus[index].BringToFront();
-            activeMenus[index].Click += (sender, EventArgs) => { emptyTileClick(sender, EventArgs, tl); };
         }
         private void emptyTileClick(object sender, EventArgs e, Tile tl)
         {
@@ -240,12 +275,22 @@ namespace ApocalypseTD
             deactivateButtons();
             Mstate = false;
         }
-        private void platformTileClick(object sender, EventArgs e, Tile tl)
+        private void platformTileClick(object sender, EventArgs e, Tile tl, state newState)
         {
+            tl.SetState(newState);
 
+            deactivateButtons();
+            Mstate = false;
+        }
+        private void resourceTileClick(object sender, EventArgs e, Tile tl)
+        {
+            tl.SetState(state.Mine); 
+
+            deactivateButtons();
+            Mstate = false;
         }
 
-                                                                                            // ENEMIES //
+        // ENEMIES //
         private Point rectangleFunc(Point C, float rad)
         {
             //(x – h)^2 + (y – k)^2 = r ^ 2, where(h, k) represents the coordinates of the center of the circle, and r represents the radius of the circle.
@@ -296,10 +341,7 @@ namespace ApocalypseTD
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
 
-        }
     }
     // TILE // 
     public class Tile
@@ -346,7 +388,15 @@ namespace ApocalypseTD
                     break;
                 case state.t1:
                     tileSprite.ImageLocation = "images\\tile-u1.png";
-                    // platform + unit sprite
+                    // platform + unit1 sprite
+                    break;
+                case state.t2:
+                    tileSprite.ImageLocation = "images\\tile-u1.png";  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // platform + unit2 sprite
+                    break;
+                case state.Mine:
+                    tileSprite.ImageLocation = "images\\tile-platform.png";  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // Mine sprite
                     break;
             }
         }
@@ -361,6 +411,7 @@ namespace ApocalypseTD
         Empty,              // 4
         Platformed,         // 5
         t1,                 // 6
-        t2                  // 7
+        t2,                 // 7
+        Mine,               // 8    
     }
 }
