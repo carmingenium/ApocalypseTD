@@ -19,3 +19,7 @@ C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\im
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-platform.png
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-u1.png
 C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\enemytest3.png
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-boulder.png
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-corrupted.png
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-resource.png
+C:\Users\dagha\source\repos\ApocalypseTD\ApocalypseTD\bin\Debug\netcoreapp3.1\images\tile-target.png

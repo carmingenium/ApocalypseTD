@@ -41,6 +41,7 @@ namespace ApocalypseTD
             // map
             tileMap = new Tile[30, 30];
             createGrid();
+            mapGen();
             // menu state
             Mstate = false;
 
@@ -306,7 +307,7 @@ namespace ApocalypseTD
         // if tile state is above a certain point, should not check for add unit. unit states will fill states until that point.
         public PictureBox tileSprite; // rectangle should become a picturebox? some form to hold tile picture
         public Point location; // Location of tile
-        public state State; // TURN INTO ENUMERATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        public state State; 
         public int[,] id;
         public Tile(Point locat)
         {
@@ -316,8 +317,7 @@ namespace ApocalypseTD
             tileSprite.Size = new Size(32, 32);
             tileSprite.Location = location;
 
-            SetState(State);
-
+            SetState(state.Empty);
         }
 
         public void SetState(state stateinf)
@@ -326,16 +326,16 @@ namespace ApocalypseTD
             switch (stateinf)
             {
                 case state.Target: 
-                    tileSprite.ImageLocation = "images\\tile-empty.png";
+                    tileSprite.ImageLocation = "images\\tile-target.png";
                     break;
                 case state.Corrupted:
-                    tileSprite.ImageLocation = "images\\tile-empty.png";
+                    tileSprite.ImageLocation = "images\\tile-corrupted.png";
                     break;
                 case state.Resource:
-                    tileSprite.ImageLocation = "images\\tile-empty.png";
+                    tileSprite.ImageLocation = "images\\tile-resource.png";
                     break;
                 case state.Boulder:
-                    tileSprite.ImageLocation = "images\\tile-empty.png";
+                    tileSprite.ImageLocation = "images\\tile-boulder.png";
                     break;
                 case state.Empty:
                     tileSprite.ImageLocation = "images\\tile-empty.png";
