@@ -34,6 +34,8 @@ namespace ApocalypseTD
             this.progressBar_wave = new System.Windows.Forms.ProgressBar();
             this.spawnTestTimer = new System.Windows.Forms.Timer(this.components);
             this.button2 = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -72,11 +74,22 @@ namespace ApocalypseTD
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.skipWave);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.pictureBox1.ImageLocation = "";
+            this.pictureBox1.Location = new System.Drawing.Point(501, 317);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(47, 35);
+            this.pictureBox1.TabIndex = 2;
+            this.pictureBox1.TabStop = false;
+            // 
             // PlayScene
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(960, 1060);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.progressBar_wave);
             this.Controls.Add(this.button1);
@@ -84,6 +97,7 @@ namespace ApocalypseTD
             this.Text = "Game";
             this.Load += new System.EventHandler(this.PlayScene_Load);
             this.Click += new System.EventHandler(this.skipWave);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -94,5 +108,6 @@ namespace ApocalypseTD
         private System.Windows.Forms.ProgressBar progressBar_wave;
         private System.Windows.Forms.Timer spawnTestTimer;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

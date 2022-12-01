@@ -17,13 +17,15 @@ namespace ApocalypseTD
         Button[] activeMenus;
         bool Mstate; // Menu State.
         // spawner
-        int offset;
+        static int offset = 40;
         Point topleft;
         Point topright;
         Point bottomleft;
         Point bottomright;
         Point center;
         float radius;
+        // spawn timer
+        int spawntimer = 10;
         // random
         Random roll;
         // MAP // 
@@ -46,7 +48,6 @@ namespace ApocalypseTD
             Mstate = false;
 
             // spawn circle
-            offset = 16;
             topleft = new Point(tileMap[0, 0].location.X - offset, tileMap[0, 0].location.Y - offset);
             topright = new Point(tileMap[29, 0].location.X + 32 + offset, tileMap[29, 0].location.Y - offset);
             bottomleft = new Point(tileMap[0, 29].location.X - offset, tileMap[0, 29].location.Y + 32 + offset);
@@ -290,7 +291,7 @@ namespace ApocalypseTD
             Mstate = false;
         }
 
-        // ENEMIES //
+                                                                                        // Spawn System / Waves //
         private Point rectangleFunc(Point C, float rad)
         {
             //(x – h)^2 + (y – k)^2 = r ^ 2, where(h, k) represents the coordinates of the center of the circle, and r represents the radius of the circle.
@@ -325,25 +326,30 @@ namespace ApocalypseTD
             // i like the circle function idea.
             // circle should be a little bigger than actual map borders. (guessing 16 pixels for now.)
         }
-        private void basicEnemyMovement(object sender, EventArgs e, int speed)
-        {
-
-        }
         private void spawnTestTimer_Tick(object sender, EventArgs e)    // 100ms.
         {
             // according to the wave, have a list of enemies to spawn.
             // every tick, spawn an enemy, on a random location on the circle function.
             // call enemyspawner in the amount of wave enemies times, with enemy input
-            enemySpawner("Test");
+            //spawntimer -= 1;
+            //if (spawntimer < 1)
+            //{
+            //    enemySpawner("Test");
+            //    spawntimer = 10;
+            //}
+                
         }
         private void skipWave(object sender, EventArgs e)               // button event.
         {
 
         }
 
-
+        private void enemyPathfind(object sender, EventArgs e, int speed, PictureBox enemy)
+        {
+            
+        }
     }
-    // TILE // 
+                                                                                            // TILE // 
     public class Tile
     {
         // if tile state is above a certain point, should not check for add unit. unit states will fill states until that point.
@@ -413,5 +419,22 @@ namespace ApocalypseTD
         t1,                 // 6
         t2,                 // 7
         Mine,               // 8    
+    }
+
+    public class Enemy
+    {
+        int speed;
+        public void target()
+        {
+
+        }
+    }
+    public class Tower
+    {
+        int attackSpeed;
+        public void target()
+        {
+
+        }
     }
 }
