@@ -8,14 +8,14 @@ using System.Windows.Forms;
 
 namespace ApocalypseTD
 {
-    
+
     public partial class PlayScene : Form
     {
         // Map
-        Tile[,] tileMap;
-        //int tileState; // 0 empty, 1 platformed, 2 unit....
-        Button[] activeMenus;
-        bool Mstate; // Menu State.
+        Tile[,] tileMap;                                // grid map
+        List<Tile> targetables = new List<Tile>();     // tiles that are targetable by enemies. !!!!!!!!!!!!!!!!!!!!!!!!!!! RESOURCES SHOULD BE ADDED WHEM THEY BECOME A MINE.
+        Button[] activeMenus;                           // List of active buttons / menus to regulate clicks.
+        bool Mstate;                                    // Menu State.
         // spawner
         static int offset = 40;
         Point topleft;
@@ -24,10 +24,12 @@ namespace ApocalypseTD
         Point bottomright;
         Point center;
         float radius;
-        // spawn timer
         int spawntimer = 10;
         // random
         Random roll;
+        // All Enemies and Units
+        List<Enemy> enemylist = new List<Enemy>();
+        List<Tower> unitlist = new List<Tower>();
         // MAP // 
         public PlayScene()
         {
@@ -67,8 +69,8 @@ namespace ApocalypseTD
         }   // return menu button.
         private void createGrid()
         {
-            int bot = 32*30;    // size of tile * amount of tile
-            int right = 32*30;  // size of tile * amount of tile
+            int bot = 32 * 30;    // size of tile * amount of tile
+            int right = 32 * 30;  // size of tile * amount of tile
             // 32*30 = 960 which is also 1920 / 2, so it is perfect width for me, for now.
             int yt = 0;         // y times
             int xt = 0;         // x times
@@ -81,7 +83,7 @@ namespace ApocalypseTD
                     currentTile.tileSprite.MouseClick += (sender, EventArgs) => { changeState(currentTile); };
                     this.Controls.Add(currentTile.tileSprite);
 
-                    tileMap[xt,yt] = currentTile;
+                    tileMap[xt, yt] = currentTile;
                     xt += 1;
                 }
                 xt = 0;
@@ -97,7 +99,8 @@ namespace ApocalypseTD
             int last = 0;
 
             // objective
-            Point obj = new Point(roll.Next(12,18), roll.Next(12, 18));
+            Point obj = new Point(roll.Next(12, 18), roll.Next(12, 18));
+            targetables.Add(tileMap[obj.X, obj.Y]); 
             genArray[last++] = obj;  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! test
             tileImplement(obj, state.Target); // set tile to Target
 
@@ -114,22 +117,23 @@ namespace ApocalypseTD
 
             for (int rep = 0; rep < 8; rep++) // set all corrupted tiles.
             {
-                tileImplement(genArray[rep+1], state.Corrupted);
+                tileImplement(genArray[rep + 1], state.Corrupted);
             }
 
 
             // resources
-            for(int amount = 0; amount < 3; amount++)
+            for (int amount = 0; amount < 3; amount++)
             {
                 Point resourcePoint;
                 do
                 {
                     resourcePoint = new Point(roll.Next(0, 30), roll.Next(0, 30));
-                } while (tileGenerated(resourcePoint,genArray,last));
+                } while (tileGenerated(resourcePoint, genArray, last));
+                targetables.Add(tileMap[resourcePoint.X, resourcePoint.Y]);
                 genArray[last++] = resourcePoint;
                 tileImplement(genArray[last - 1], state.Resource); // set tile state to resource.
             }
-            
+
             // boulders
             int boulderAmount = roll.Next(2, 8);
             for (int amount = 0; amount < boulderAmount; amount++)
@@ -159,22 +163,22 @@ namespace ApocalypseTD
             tileMap[current.X, current.Y].SetState(state);
         }
 
-                                                                                             // UNITS // 
+        // UNITS // 
         private void createButtons(Tile tl, int times)
         {
             // need to calculate location for amount of times. also add y levels for 3 times, 3 times.
             for (int x = 0; x < times; x++)
             {
-                int levelreset = (3 - times % 3) * ((x+3) / (((times+3)/3)*3)); // if times > 3, set it to 3 until x > 3 for every 3 loop. 6 3 3 , 5 3 2, 4 3 1, 7 3 3 1, 8 3 3 2, 2 = 2
-                int xfix = (((3  - (levelreset) -1 ) * 16) - ( 32 * (x - ((x/3)*3)) ) );
+                int levelreset = (3 - times % 3) * ((x + 3) / (((times + 3) / 3) * 3)); // if times > 3, set it to 3 until x > 3 for every 3 loop. 6 3 3 , 5 3 2, 4 3 1, 7 3 3 1, 8 3 3 2, 2 = 2
+                int xfix = (((3 - (levelreset) - 1) * 16) - (32 * (x - ((x / 3) * 3))));
                 int yfix = ((x / 3) * 20);
 
 
                 Button u1 = new Button();
-                u1.Text = "Creation" + (x+1);
-                u1.Location = new Point(tl.location.X-xfix, (tl.location.Y-20)-yfix);
+                u1.Text = "Creation" + (x + 1);
+                u1.Location = new Point(tl.location.X - xfix, (tl.location.Y - 20) - yfix);
                 u1.Size = new Size(32, 20);
-                u1.Name = "active" + (x+1);
+                u1.Name = "active" + (x + 1);
                 activeMenus[x] = u1;
             }
             Mstate = true;
@@ -197,7 +201,7 @@ namespace ApocalypseTD
 
                 case state.Platformed:
                     createButtons(tl, 2);
-                    for(int unit = 0; 2>unit; unit++)
+                    for (int unit = 0; 2 > unit; unit++)
                     {
                         activeMenus[unit].Text = "Unit" + (unit + 1);
                         activeMenus[unit].Name = "active";
@@ -250,7 +254,7 @@ namespace ApocalypseTD
         }
         private void deactivateButtons()
         {
-            for (int ind = 0; activeMenus.Length>ind;ind++)
+            for (int ind = 0; activeMenus.Length > ind; ind++)
             {
                 this.Controls.Remove(activeMenus[ind]);
             }
@@ -285,20 +289,20 @@ namespace ApocalypseTD
         }
         private void resourceTileClick(object sender, EventArgs e, Tile tl)
         {
-            tl.SetState(state.Mine); 
+            tl.SetState(state.Mine);
 
             deactivateButtons();
             Mstate = false;
         }
 
-                                                                                        // Spawn System / Waves //
+        // Spawn System / Waves //
         private Point rectangleFunc(Point C, float rad)
         {
             //(x – h)^2 + (y – k)^2 = r ^ 2, where(h, k) represents the coordinates of the center of the circle, and r represents the radius of the circle.
             // create random angle val: between 0 and 360 [0,360)
             // 
             Random x = new Random();
-            int angle = (x.Next(0,360));
+            int angle = (x.Next(0, 360));
 
             double ylen = rad * Math.Sin(angle);
             double xlen = rad * Math.Cos(angle);
@@ -306,17 +310,18 @@ namespace ApocalypseTD
             Point spawnPoint = new Point(C.X + (int)xlen, C.Y + (int)ylen);
             return spawnPoint;
         }
-        private void enemySpawner(string enemyType)
+        private void enemySpawner(string enemyType, Point spawnpoint)
         {
             // might need an enemy class with multiple picture box objects to hide that pictureboxes are not pngs and have whitespace.
             // and also for animations.
-
-            PictureBox enemy = new PictureBox();
-            enemy.Location = rectangleFunc(center, radius);     // spawn location
-            enemy.Size = new Size(32, 32);
-            enemy.ImageLocation = "images\\enemytest3.png";     // imagelocation
-            this.Controls.Add(enemy);                           // controls.add
-            enemy.BringToFront();                               // bringtofront
+            PictureBox img = new PictureBox();                              // image declaration
+            img.Location = spawnpoint;                                      // location 
+            img.Size = new Size(32, 32);                                    // imagesize
+            img.ImageLocation = "images\\enemytest3.png";                   // imagelocation
+            ChaserEnemy currentEnemy = new ChaserEnemy(targetables, img);   // enemy declaration
+            this.Controls.Add(currentEnemy.enemySprite);                    // controls.add
+            currentEnemy.enemySprite.BringToFront();                        // bringtofront
+            enemylist.Add(currentEnemy);
 
             // visible (if needed)
             //enemy.
@@ -328,16 +333,28 @@ namespace ApocalypseTD
         }
         private void spawnTestTimer_Tick(object sender, EventArgs e)    // 100ms.
         {
-            // according to the wave, have a list of enemies to spawn.
-            // every tick, spawn an enemy, on a random location on the circle function.
-            // call enemyspawner in the amount of wave enemies times, with enemy input
+            //// according to the wave, have a list of enemies to spawn.
+            //// every tick, spawn an enemy, on a random location on the circle function.
+            //// call enemyspawner in the amount of wave enemies times, with enemy input
             //spawntimer -= 1;
             //if (spawntimer < 1)
             //{
-            //    enemySpawner("Test");
+            //    Point spawn = rectangleFunc(center,radius);  
+            //    enemySpawner("Test",spawn);
             //    spawntimer = 10;
             //}
+            try
+            {
+                foreach (Enemy chaser in enemylist)
+                {
+                    chaser.pathfind();
+                    chaser.move();
+                }
+            }
+            catch (NullReferenceException)
+            {
                 
+            }
         }
         private void skipWave(object sender, EventArgs e)               // button event.
         {
@@ -348,14 +365,33 @@ namespace ApocalypseTD
         {
             
         }
+
+        private void ButtonSpawner(object sender, EventArgs e)
+        {
+            Point current = new Point(tileMap[29, 29].location.X + 150, tileMap[29, 29].location.Y);
+            enemySpawner("type", current);
+        }
+
+
+        // CUSTOM OPTIONS
+        private void PauseGame_Click(object sender, EventArgs e) // doesnt work.
+        {
+            Control[] list = this.Controls.Find("spawnTestTimer", true);
+            if(list[0].Enabled == false) list[0].Enabled = true;
+            else list[0].Enabled = false;
+
+            // for this to work properly, need to create timers in code and add them to a list to reach quickly.
+            // find all timers in the game, stop it
+            // if stopped, continue the game.
+        }
     }
-                                                                                            // TILE // 
+    // TILE // 
     public class Tile
     {
         // if tile state is above a certain point, should not check for add unit. unit states will fill states until that point.
         public PictureBox tileSprite; // rectangle should become a picturebox? some form to hold tile picture
         public Point location; // Location of tile
-        public state State; 
+        public state State;
         public int[,] id;
         public Tile(Point locat)
         {
@@ -373,7 +409,7 @@ namespace ApocalypseTD
             State = stateinf;
             switch (stateinf)
             {
-                case state.Target: 
+                case state.Target:
                     tileSprite.ImageLocation = "images\\tile-target.png";
                     break;
                 case state.Corrupted:
@@ -420,21 +456,84 @@ namespace ApocalypseTD
         t2,                 // 7
         Mine,               // 8    
     }
-
-    public class Enemy
+    // ENEMIES
+    abstract class Enemy // make enemy an abstract class to create subclasses of enemies from it?
     {
-        int speed;
-        public void target()
-        {
-
-        }
+        public PictureBox enemySprite;
+        public Random roll;
+        public float speed;
+        public Tile target;
+        public bool inMap; // if inMap, A*. else move towards target.
+        //public Enemy()
+        //{
+        //    // every class of enemy will have its own predetermined stats
+        //    // Waves might change enemy stats after some wave.
+        //}
+        public abstract void pathfind();
+        public abstract void move();
+        public abstract void targeting(List<Tile> targetables);
     }
-    public class Tower
+    class ChaserEnemy : Enemy
+    {
+        Point direction; // current direction, aside from path.
+        public ChaserEnemy(List<Tile>targetables, PictureBox img)
+        {
+            speed = 15f;
+            enemySprite = img;
+            roll = new Random();
+            inMap = false;
+            targeting(targetables);
+        }
+        public override void pathfind()
+        {
+            if (inMap)
+            {
+                // A*
+            }
+            else
+            {
+                direction = new Point(target.location.X - enemySprite.Location.X, target.location.Y - enemySprite.Location.Y);
+
+            }
+        }
+        public override void move()
+        {
+            float x_sqrt = direction.X * direction.X;
+            float y_sqrt = direction.Y * direction.Y;
+            double distance = Math.Sqrt(x_sqrt + y_sqrt);
+            enemySprite.Location = new Point(  (int)(enemySprite.Location.X + ((float)direction.X / distance) * speed) , (int)(enemySprite.Location.Y + ((float)direction.Y / distance) * speed));
+        }
+        public override void targeting(List<Tile>targetables)
+        {
+            int targetId = roll.Next(0, targetables.Count);
+            target = targetables[targetId];
+        }
+        //Vector2 SpeedCalc(Vector2 direction)
+        //{
+        //    float distance = PlayerDistance();
+        //    Vector2 netspeed = new Vector2(direction.x / distance, direction.y / distance);
+        //    return netspeed;
+        //} // setting speed to one certain value using sin and cos.
+        //float PlayerDistance() // finding distance to player
+        //{
+        //    Vector2 DistanceVector = DirectionCalc();
+        //    float vectorx_psg = (DistanceVector.x * DistanceVector.x);
+        //    float vectory_psg = (DistanceVector.y * DistanceVector.y);
+        //    float distance = Mathf.Sqrt(vectorx_psg + vectory_psg);
+        //    return distance;
+        //}
+    }
+    // TOWERS
+    abstract class Tower // make Tower an abstract class to create subclasses of tower units from it?
     {
         int attackSpeed;
-        public void target()
-        {
-
-        }
+        public abstract void target();
+    }
+    // A* PATHFINDING NODES
+    public class NodeRoad
+    {
+        int F, H, T; // F is travelled distance from start. // H is direct distance to target. Second checked value // T is F + H, first checked Value
+        bool Target, Start, blocked;
+        Point loc;
     }
 }

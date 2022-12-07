@@ -34,8 +34,8 @@ namespace ApocalypseTD
             this.progressBar_wave = new System.Windows.Forms.ProgressBar();
             this.spawnTestTimer = new System.Windows.Forms.Timer(this.components);
             this.button2 = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.testspawn = new System.Windows.Forms.Button();
+            this.PauseGame = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -74,22 +74,33 @@ namespace ApocalypseTD
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.skipWave);
             // 
-            // pictureBox1
+            // testspawn
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.pictureBox1.ImageLocation = "";
-            this.pictureBox1.Location = new System.Drawing.Point(501, 317);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(47, 35);
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
+            this.testspawn.Location = new System.Drawing.Point(777, 9);
+            this.testspawn.Name = "testspawn";
+            this.testspawn.Size = new System.Drawing.Size(75, 23);
+            this.testspawn.TabIndex = 2;
+            this.testspawn.Text = "testSpawn";
+            this.testspawn.UseVisualStyleBackColor = true;
+            this.testspawn.Click += new System.EventHandler(this.ButtonSpawner);
+            // 
+            // PauseGame
+            // 
+            this.PauseGame.Location = new System.Drawing.Point(975, 10);
+            this.PauseGame.Name = "PauseGame";
+            this.PauseGame.Size = new System.Drawing.Size(75, 23);
+            this.PauseGame.TabIndex = 3;
+            this.PauseGame.Text = "Pause";
+            this.PauseGame.UseVisualStyleBackColor = true;
+            this.PauseGame.Click += new System.EventHandler(this.PauseGame_Click);
             // 
             // PlayScene
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(960, 1060);
-            this.Controls.Add(this.pictureBox1);
+            this.ClientSize = new System.Drawing.Size(1135, 1060);
+            this.Controls.Add(this.PauseGame);
+            this.Controls.Add(this.testspawn);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.progressBar_wave);
             this.Controls.Add(this.button1);
@@ -97,7 +108,6 @@ namespace ApocalypseTD
             this.Text = "Game";
             this.Load += new System.EventHandler(this.PlayScene_Load);
             this.Click += new System.EventHandler(this.skipWave);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -108,6 +118,7 @@ namespace ApocalypseTD
         private System.Windows.Forms.ProgressBar progressBar_wave;
         private System.Windows.Forms.Timer spawnTestTimer;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button testspawn;
+        private System.Windows.Forms.Button PauseGame;
     }
 }
