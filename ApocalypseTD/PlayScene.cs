@@ -469,9 +469,32 @@ namespace ApocalypseTD
         //    // every class of enemy will have its own predetermined stats
         //    // Waves might change enemy stats after some wave.
         //}
-        public abstract void pathfind();
+        public abstract void pathfind(Point topleft, Point bottomright);
         public abstract void move();
         public abstract void targeting(List<Tile> targetables);
+        public abstract bool mapLocationCheck(Point topleft, Point bottomright);
+        public void pathfind_new(Point start, Point target)
+        {
+            List<Node> searchList = new List<Node>();
+            List<Node> processedList = new List<Node>();
+            // Start Node
+            Node currentNode = new Node(start, target, );
+            searchList.Add(currentNode);
+            bool targetFound = false;
+
+            while (!targetFound)
+            {
+                List<Node> currentList = currentNode.adjacentCheck();                              //!!!!!!!!!!!!!!!!!!! NULL FUNCTION
+                // collects available adjacent tiles.
+                searchList.AddRange(currentList);
+                searchList.Remove(currentNode);
+                processedList.Add(currentNode);
+                currentNode = FindNewNode(searchList);
+                // finds GHT value, chooses that node and returns it.
+                targetFound = TargetReachCheck(currentNode);
+                // checks if currentNode is target, sets it to targetFound.
+            }
+        }
     }
     class ChaserEnemy : Enemy
     {
@@ -484,8 +507,9 @@ namespace ApocalypseTD
             inMap = false;
             targeting(targetables);
         }
-        public override void pathfind()
+        public override void pathfind(Point topleft, Point bottomright)
         {
+            inMap = mapLocationCheck(topleft, bottomright);
             if (inMap)
             {
                 // A*
@@ -507,6 +531,16 @@ namespace ApocalypseTD
         {
             int targetId = roll.Next(0, targetables.Count);
             target = targetables[targetId];
+        }
+        public override bool mapLocationCheck(Point topleft, Point bottomright)
+        {
+            bool tlCheck = (this.enemySprite.Location.X > topleft.X) & (this.enemySprite.Location.Y < topleft.Y);          // topleft check
+            bool brCheck = (this.enemySprite.Location.X < topleft.X) & (this.enemySprite.Location.Y > bottomright.Y);                                                                    // botright check
+            if (tlCheck & brCheck)
+            {
+                return true;
+            }
+            return false;
         }
         //Vector2 SpeedCalc(Vector2 direction)
         //{
@@ -530,10 +564,91 @@ namespace ApocalypseTD
         public abstract void target();
     }
     // A* PATHFINDING NODES
-    public class NodeRoad
+    public class Node
     {
-        int F, H, T; // F is travelled distance from start. // H is direct distance to target. Second checked value // T is F + H, first checked Value
-        bool Target, Start, blocked;
+        int G, H, T; // G is travelled distance from start. // H is direct distance to target. Second checked value // T is F + H, first checked Value
+        bool Start, Target, blocked;
         Point loc;
+
+        int limit = 29;
+        //public Node StartNode(Point target, Point location)
+        //{
+        //    // DistanceCalculations
+        //    G = 0;
+        //    H = calculateH();
+        //    T = G + H;
+        //    // Booleans
+        //    Start = true;
+        //    blocked = false;
+        //    Target = false;
+        //    // Location
+        //    loc = start;
+        //    return;
+        //}
+        public Node (Point location)  // !!!!!!!!!!!!!!!!!!!!!!!! SKIPPED CONSTRUCTOR, could not understand what I wanted to do here.
+        {
+            // DistanceCalculations
+            G = calcG();
+            H = calcH();
+            T = G + H;
+            // Booleans
+            Start = false;
+            blocked = false;
+            Target = false;
+
+            SetTileState(this);
+        }
+        public void SetTileState(Node current)
+        {
+            // Start, Target, Location check.
+        }
+        public List<Node> adjacentCheck()
+        {
+            List<Node> searchable = new List<Node>();
+            bool[] existing = CheckExisting();  // 4 length array.
+            // Finds existing tiles and returns them in order. Clockwise start from top. 0 = top, 1 = right, 2 = bottom, 3 = left.
+            // if tile exists return true if not return false.
+            for(int i = 0; i<existing.Length; i++)
+            {
+                if (existing[i])
+                {
+                    Point newTileLoc = calculateLocation(i); // from i information can be calculated with simple switch. keys are given above.
+                    Node current = new Node(start, target, newTileLoc);
+                    calcG(i, calculateH(newTileLoc));
+                    if (!current.blocked)
+                    {
+                        searchable.Add(current);
+                    }
+                }
+            }
+            return searchable;
+        }
+        public void calcG() // Im not sure where the return will be?
+        {
+
+        }
+        public int calcH(Point location)
+        {
+            
+        }
+        public void newLocCalc(int i)
+        {
+            switch (i)
+            {
+                case 0:
+                    // top
+                    break;
+                case 1:
+                    // right
+                    break;
+                case 2:
+                    // bottom
+                    break;
+                case 3:
+                    // left
+                    break;
+            }
+        }
+
     }
 }
