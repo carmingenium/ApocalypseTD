@@ -473,18 +473,18 @@ namespace ApocalypseTD
         public abstract void move();
         public abstract void targeting(List<Tile> targetables);
         public abstract bool mapLocationCheck(Point topleft, Point bottomright);
-        public void pathfind_new(Point start, Point target)
+        public void pathfind_new(Point start, Point target, Point location)
         {
             List<Node> searchList = new List<Node>();
             List<Node> processedList = new List<Node>();
             // Start Node
-            Node currentNode = new Node(start, target, );
+            Node currentNode = new Node(true, target, location);
             searchList.Add(currentNode);
             bool targetFound = false;
 
             while (!targetFound)
             {
-                List<Node> currentList = currentNode.adjacentCheck();                              //!!!!!!!!!!!!!!!!!!! NULL FUNCTION
+                List<Node> currentList = currentNode.adjacentCheck();
                 // collects available adjacent tiles.
                 searchList.AddRange(currentList);
                 searchList.Remove(currentNode);
@@ -566,9 +566,10 @@ namespace ApocalypseTD
     // A* PATHFINDING NODES
     public class Node
     {
-        int G, H, T; // G is travelled distance from start. // H is direct distance to target. Second checked value // T is F + H, first checked Value
+        int G, H, T; // G is travelled distance from start. // H is direct distance to target. Second checked value // T is G + H, first checked Value
         bool Start, Target, blocked;
         Point loc;
+        Point targetP;
 
         int limit = 29;
         //public Node StartNode(Point target, Point location)
@@ -585,14 +586,31 @@ namespace ApocalypseTD
         //    loc = start;
         //    return;
         //}
-        public Node (Point location)  // !!!!!!!!!!!!!!!!!!!!!!!! SKIPPED CONSTRUCTOR, could not understand what I wanted to do here.
+        public Node (int oldG,Point target, Point location)  // Normal Constructor
         {
             // DistanceCalculations
-            G = calcG();
-            H = calcH();
+            G = oldG + 1;
+            H = calcH(target, location);
             T = G + H;
             // Booleans
             Start = false;
+            blocked = false;
+            Target = false;
+
+            SetTileState(this); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! I dont have a way to reach tilemap???????????????????????????
+            
+        }
+        public Node(bool start, Point location, Point target)  // Start constructor.
+        {
+            // DistanceCalculations
+            G = 0;
+            H = calcH(location,target);
+            T = G + H;
+            // Points
+            loc = location;
+            targetP = target;
+            // Booleans
+            Start = start;
             blocked = false;
             Target = false;
 
@@ -605,7 +623,7 @@ namespace ApocalypseTD
         public List<Node> adjacentCheck()
         {
             List<Node> searchable = new List<Node>();
-            bool[] existing = CheckExisting();  // 4 length array.
+            bool[] existing = CheckExisting();  // 4 length array. // NEEEEDS TO REACH TILEMAP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // Finds existing tiles and returns them in order. Clockwise start from top. 0 = top, 1 = right, 2 = bottom, 3 = left.
             // if tile exists return true if not return false.
             for(int i = 0; i<existing.Length; i++)
@@ -613,8 +631,7 @@ namespace ApocalypseTD
                 if (existing[i])
                 {
                     Point newTileLoc = calculateLocation(i); // from i information can be calculated with simple switch. keys are given above.
-                    Node current = new Node(start, target, newTileLoc);
-                    calcG(i, calculateH(newTileLoc));
+                    Node current = new Node(this.G, targetP, newTileLoc);
                     if (!current.blocked)
                     {
                         searchable.Add(current);
@@ -623,31 +640,36 @@ namespace ApocalypseTD
             }
             return searchable;
         }
-        public void calcG() // Im not sure where the return will be?
+        public Point calculateLocation(int i)
         {
-
-        }
-        public int calcH(Point location)
-        {
-            
-        }
-        public void newLocCalc(int i)
-        {
+            Point newLoc = new Point(-1, -1);
             switch (i)
             {
                 case 0:
                     // top
+                    newLoc = new Point(this.loc.X, this.loc.Y - 1);
                     break;
                 case 1:
                     // right
+                    newLoc = new Point(this.loc.X + 1, this.loc.Y);
                     break;
                 case 2:
                     // bottom
+                    newLoc = new Point(this.loc.X, this.loc.Y + 1);
                     break;
                 case 3:
                     // left
+                    newLoc = new Point(this.loc.X - 1, this.loc.Y);
                     break;
             }
+            return newLoc;
+        }
+        public int calcH(Point location, Point target)
+        {
+            int H = 0;
+            H += Math.Abs(location.X - target.X);
+            H += Math.Abs(location.Y - target.Y);
+            return H;
         }
 
     }
